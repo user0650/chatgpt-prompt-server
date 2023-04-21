@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 import time
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # 设置浏览器参数
 chrome_options = webdriver.ChromeOptions()
@@ -17,26 +17,14 @@ chrome_options.add_argument('--no-sandbox')
 driver = webdriver.Chrome(options=chrome_options)
 
 
-# 定义接口
-@app.route('/calc', methods=['POST'])
-def calc():
-    data = request.json
-    op = data['op']
-    nums = data['nums']
-    result = 0
+@app.route('/')
+def home():
+    return 'Hello, World!'
 
-    if op == 'add':
-        result = sum(nums)
-    elif op == 'sub':
-        result = nums[0] - sum(nums[1:])
-    elif op == 'mul':
-        result = 1
-        for num in nums:
-            result *= num
-    elif op == 'div':
-        result = nums[0] / nums[1]
 
-    return jsonify({'result': result})
+@app.route('/about')
+def about():
+    return 'About'
 
 
 # 获取url页面信息，构造prompt内容
@@ -71,5 +59,6 @@ def page():
 
 
 # 启动服务
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
