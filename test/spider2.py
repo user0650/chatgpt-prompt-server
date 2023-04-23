@@ -12,8 +12,11 @@ async def main():
     browser = await launch()
     page = await browser.newPage()
     await page.goto(url)
-    await page.screenshot({'path': 'example.png'})
+    # await page.screenshot({'path': 'example.png'})
+    title = await page.title()
     await browser.close()
+    return title
 
+r = asyncio.get_event_loop().run_until_complete(main())
 
-asyncio.get_event_loop().run_until_complete(main())
+print(r)

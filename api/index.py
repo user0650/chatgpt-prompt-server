@@ -3,9 +3,13 @@ from flask_cors import CORS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+import asyncio
+from pyppeteer import launch
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+
+browser = await launch()
 
 # 设置浏览器参数
 # chrome_options = webdriver.ChromeOptions()
@@ -15,7 +19,6 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 # 创建Chrome浏览器驱动，用来解析网页
 # driver = webdriver.Chrome(options=chrome_options)
-
 
 @app.route('/')
 def home():
@@ -58,7 +61,22 @@ def about():
 #     return jsonify({'result': prompt})
 
 
+# 获取url页面信息，构造prompt内容
+@app.route('/page', methods=['GET', 'POST'])
+def page():
+    async def main():
+        url = 'https://item.jd.com/6039832.html'
+        p = await browser.newPage()
+        await p.goto(url)
+        title = await p.title()
+        return title
+
+    r = asyncio.get_event_loop().run_until_complete(main())
+    return r
+
 # 启动服务
 # if __name__ == '__main__':
 #     app.run(debug=True)
 
+# 关闭服务
+# await browser.close()
